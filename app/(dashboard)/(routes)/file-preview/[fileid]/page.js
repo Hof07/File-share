@@ -82,7 +82,7 @@ function FilePreview() {
 
   const copyToClipboard = () => {
     if (fileid) {
-      const shortUrl = `https://ff1c-219-91-196-30.ngrok-free.app/f/${fileid}`
+      const shortUrl = `https://file-share-seven-silk.vercel.app//f/${fileid}`
       navigator.clipboard.writeText(shortUrl)
       toast.success('URL copied to clipboard!')
     }
@@ -129,7 +129,7 @@ function FilePreview() {
                 <input
                   type="text"
                   readOnly
-                  value={`https://ff1c-219-91-196-30.ngrok-free.app/f/${fileid}`}
+                  value={`https://file-share-seven-silk.vercel.app//f/${fileid}`}
                   className="border p-2 rounded w-full"
                   onFocus={(e) => e.target.select()}
                 />

@@ -87,12 +87,12 @@ function Search() {
                 <input
                   type='text'
                   readOnly
-                  value={`http://localhost:3000/f/${fileData.id}`}
+                  value={`https://file-share-seven-silk.vercel.app//f/${fileData.id}`}
                   className='flex-1 border border-gray-300 rounded px-3 py-2 bg-gray-100 cursor-not-allowed'
                 />
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText(`http://localhost:3000/f/${fileData.id}`)
+                    navigator.clipboard.writeText(`https://file-share-seven-silk.vercel.app//f/${fileData.id}`)
                     toast('URL copied to clipboard!')
                   }}
                   className='bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition'
