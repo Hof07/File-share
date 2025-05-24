@@ -10,9 +10,9 @@ export const metadata = {
   title: 'Share.io - Share your files with ease',
   description: 'Share files instantly with Share.io',
   icons: {
-    icon: './favicon.png',
-    shortcut: './favicon.png',
-    apple: './favicon.png',
+    icon: './logs.svg',
+    shortcut: './logs.svg',
+    apple: './logs.svg',
   },
 }
 
