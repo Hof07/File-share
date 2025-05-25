@@ -12,6 +12,10 @@
   --background-end-rgb: 255, 255, 255;     /* White background */
 }
 
+html,body{
+  overflow: hidden
+}
+
 body {
   @apply text-black bg-white; /* Tailwind's bg-white class */ /* Black text */
   background: rgb(var(--background-start-rgb)); /* Pure white background */
@@ -103,3 +107,19 @@ body {
   animation: blast 0.8s ease-out forwards;
 }
 
+@keyframes gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-animated {
+  background-size: 200% 200%;
+  animation: gradient-move 5s ease infinite;
+}

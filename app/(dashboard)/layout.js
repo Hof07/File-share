@@ -7,16 +7,20 @@ import TopHeader from './_components/TopHeader'
 function Layout({ children }) {
   return (
     <div className='flex min-h-screen'>
-      {/* Sidebar: Hidden on small screens, visible on md+ */}
-      <div className='h-full w-64 fixed inset-y-0 z-50 bg-white border-r hidden md:flex flex-col'>
+
+      {/* Sidebar - fixed on left */}
+      <div className='fixed inset-y-0 left-0 w-64 bg-white border-r hidden md:flex flex-col'>
         <SideNav />
       </div>
 
-      {/* Main Content Area */}
+      {/* Main content area */}
       <div className='flex flex-col flex-1 md:ml-64 w-full'>
         <TopHeader />
-        <main className='p-4'>{children}</main>
+        <main className='p-4'>
+          {children}
+        </main>
       </div>
+
     </div>
   )
 }

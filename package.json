@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.19.2",
+    "@google/generative-ai": "^0.24.1",
     "@radix-ui/react-progress": "^1.1.7",
     "@supabase/supabase-js": "^2.49.4",
     "bcryptjs": "^3.0.2",
