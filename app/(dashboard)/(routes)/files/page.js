@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 
-// Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -15,7 +14,7 @@ export default function FilesPage() {
   const { user, isSignedIn } = useUser()
   const [files, setFiles] = useState([])
   const [loading, setLoading] = useState(true)
-  const [removingId, setRemovingId] = useState(null) // For showing button loading
+  const [removingId, setRemovingId] = useState(null)
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -38,12 +37,10 @@ export default function FilesPage() {
     if (isSignedIn) fetchFiles()
   }, [isSignedIn, user])
 
-  // Remove file handler
   const handleRemove = async (fileId) => {
     if (!user) return
     setRemovingId(fileId)
 
-    // Find the file object so we get file_path for storage delete
     const fileToRemove = files.find((f) => f.id === fileId)
     if (!fileToRemove) {
       setRemovingId(null)
@@ -51,18 +48,15 @@ export default function FilesPage() {
     }
 
     try {
-      // 1. Delete from storage bucket
       const { error: storageError } = await supabase.storage
-        .from('uploads') // <-- replace with your bucket name
+        .from('uploads')
         .remove([fileToRemove.file_path])
 
       if (storageError) {
         console.error('❌ Storage delete error:', storageError.message)
-        setRemovingId(null)
         return
       }
 
-      // 2. Delete file record from files table
       const { error: deleteError } = await supabase
         .from('files')
         .delete()
@@ -71,11 +65,9 @@ export default function FilesPage() {
 
       if (deleteError) {
         console.error('❌ Supabase delete error:', deleteError.message)
-        setRemovingId(null)
         return
       }
 
-      // 3. Decrement upload_count in user_uploads table
       const { data: userData, error: userError } = await supabase
         .from('user_uploads')
         .select('upload_count')
@@ -84,7 +76,6 @@ export default function FilesPage() {
 
       if (userError) {
         console.error('❌ Supabase upload count fetch error:', userError.message)
-        setRemovingId(null)
         return
       }
 
@@ -97,12 +88,11 @@ export default function FilesPage() {
 
       if (updateError) {
         console.error('❌ Supabase upload count update error:', updateError.message)
-        setRemovingId(null)
         return
       }
 
-      // 4. Update local state to remove file from UI
-      setFiles(files.filter((file) => file.id !== fileId))
+      // ✅ Remove from UI without reload
+      setFiles((prev) => prev.filter((f) => f.id !== fileId))
     } finally {
       setRemovingId(null)
     }
@@ -112,7 +102,7 @@ export default function FilesPage() {
     return (
       <div className="flex h-screen items-center justify-center bg-transparent">
         <div className="text-center">
-         <Image src={'/search.gif'} width={150} height={100} alt='search' />
+          <Image src={'/search.gif'} width={150} height={100} alt='search' />
         </div>
       </div>
     )
@@ -129,7 +119,7 @@ export default function FilesPage() {
         <UserButton afterSignOutUrl="/" />
       </div>
 
-      {/* Files */}
+      {/* Files Grid */}
       {loading ? (
         <p className="text-gray-500">Loading your files...</p>
       ) : files.length === 0 ? (
@@ -144,16 +134,20 @@ export default function FilesPage() {
               <h2 className="text-lg font-semibold text-gray-800">{file.name}</h2>
               <p className="text-sm text-gray-500 mt-1">Type: {file.type}</p>
               <p className="text-sm text-gray-500">Size: {file.size}</p>
-              <p className="text-sm text-gray-400">
-                Uploaded: {new Date(file.uploaded_at).toLocaleDateString()}
-              </p>
+              <p className="text-sm text-gray-400">Uploaded: {new Date(file.uploaded_at).toLocaleDateString()}</p>
+              <p className="text-sm font-mono text-blue-700 mt-2">ID: {file.random_id}</p>
+
+              {/* Download button with Supabase file link */}
               <a
-                href={file.file_url}
-                download
+                href={file.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-4 block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-center transition"
               >
                 Download
               </a>
+
+              {/* Remove button */}
               <button
                 onClick={() => handleRemove(file.id)}
                 disabled={removingId === file.id}

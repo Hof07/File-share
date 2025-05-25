@@ -2,8 +2,8 @@
 
 import { File, Mail, Search, Shield, Upload } from 'lucide-react'
 import Image from 'next/image'
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import React from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { Progress } from '@/components/ui/progress'
 import useUploadCount from '../(routes)/upload/_components/useUploadCount'
 
@@ -11,7 +11,7 @@ const MAX_UPLOADS = 5
 
 function SideNav() {
   const router = useRouter()
-  const [activeIndex, setActivateIndex] = useState(0)
+  const pathname = usePathname() // ✅ get current path
   const { count: uploadCount } = useUploadCount()
   const progressValue = (uploadCount / MAX_UPLOADS) * 100
 
@@ -39,7 +39,7 @@ function SideNav() {
             </linearGradient>
           </defs>
           <path
-            fill={isActive ? 'url(#grad1)' : '#6b7280'} // gray on default, gradient when active
+            fill={isActive ? 'url(#grad1)' : '#6b7280'}
             d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"
           />
         </svg>
@@ -47,8 +47,7 @@ function SideNav() {
     }
   ]
 
-  const handleClick = (event, index, path) => {
-    setActivateIndex(index)
+  const handleClick = (event, _index, path) => {
     if (event.shiftKey) {
       window.open(path, '_blank')
     } else {
@@ -66,17 +65,19 @@ function SideNav() {
 
         {/* Menu Items */}
         <div className='flex flex-col'>
-          {menuList.map((item, index) => {
-            const isActive = activeIndex === index
+          {menuList.map((item) => {
             const IconComponent = item.icon
+            const isActive = pathname.startsWith(item.path)
 
             return (
               <button
                 key={item.id}
                 className={`flex gap-2 p-4 px-6 w-full text-gray-500 hover:bg-gray-100
-                  ${isActive ? (item.name === 'Generative' ? 'bg-gradient-to-r from-indigo-100 to-purple-100 text-[#a855f7]' : 'text-primary bg-blue-50') : ''}
+                  ${isActive ? (item.name === 'Generative'
+                    ? 'bg-gradient-to-r from-indigo-100 to-purple-100 text-[#a855f7]'
+                    : 'text-primary bg-blue-50') : ''}
                 `}
-                onClick={(e) => handleClick(e, index, item.path)}
+                onClick={(e) => handleClick(e, null, item.path)}
               >
                 {typeof IconComponent === 'function' ? (
                   <IconComponent isActive={isActive} />
