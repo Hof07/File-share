@@ -125,7 +125,8 @@ function FilePreview() {
     "
   >
    
-        <img src="https://file-share-seven-silk.vercel.app/logo-mail.png" width="150" height="100" alt="Logo" />
+    <h2 style="color: #007bff;">Share.io</h2>
+      
   
     
 
