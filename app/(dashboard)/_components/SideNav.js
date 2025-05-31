@@ -11,7 +11,7 @@ const MAX_UPLOADS = 5
 
 function SideNav() {
   const router = useRouter()
-  const pathname = usePathname() // ✅ get current path
+  const pathname = usePathname() 
   const { count: uploadCount } = useUploadCount()
   const progressValue = (uploadCount / MAX_UPLOADS) * 100
 

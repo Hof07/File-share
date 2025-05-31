@@ -1,15 +1,30 @@
-// 'use slient'
-"use client"
+'use client'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import clsx from 'clsx'
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <header className="bg-transparent backdrop-blur border-b border-gray-200 sticky top-0 z-50">
+    <header
+      className={clsx(
+        'sticky top-0 z-50 transition-all duration-300 border-b backdrop-blur-md',
+        isScrolled ? 'bg-white/60 shadow-md' : 'bg-white/30 shadow-none'
+      )}
+    >
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-16 items-center justify-between transition-all duration-300">
           {/* Logo */}
           <div className="md:flex md:items-center md:gap-12">
             <a href="#">
@@ -17,38 +32,29 @@ function Header() {
             </a>
           </div>
 
-          {/* Navigation for desktop */}
+          {/* Desktop Navigation */}
           <div className="hidden md:block">
             <nav aria-label="Global">
               <ul className="flex items-center gap-8 text-sm font-semibold">
-                <li>
-                  <a className="text-gray-800 transition hover:text-[#3A04FF]" href="#">Home</a>
-                </li>
-                <li>
-                  <a className="text-gray-600 transition hover:text-[#3A04FF]" href="#">Upload</a>
-                </li>
-                <li>
-                  <a className="text-gray-600 transition hover:text-[#3A04FF]" href="#">About Us</a>
-                </li>
-                <li>
-                  <a className="text-gray-600 transition hover:text-[#3A04FF]" href="#">Contact Us</a>
-                </li>
+                <li><a className="text-gray-800 transition hover:text-[#3A04FF]" href="#">Home</a></li>
+                <li><a className="text-gray-600 transition hover:text-[#3A04FF]" href="#">Upload</a></li>
+                <li><a className="text-gray-600 transition hover:text-[#3A04FF]" href="#">About Us</a></li>
+                <li><a className="text-gray-600 transition hover:text-[#3A04FF]" href="#">Contact Us</a></li>
               </ul>
             </nav>
           </div>
 
-          {/* CTA Button + Mobile Menu */}
+          {/* CTA + Hamburger */}
           <div className="flex items-center gap-4">
             <div className="sm:flex sm:gap-4">
               <a
-                className="rounded-md bg-[#007DFC] text-sm font-medium text-white px-[28px] py-[12px] shadow transition-all duration-500 ease-in-out hover:rounded-[50px] hover:bg-[#007DFC]"
+                className="rounded-md bg-[#007DFC] text-sm font-medium text-white px-[28px] py-[12px] shadow transition-all duration-500 ease-in-out hover:rounded-[50px] hover:bg-[#005acc]"
                 href="/upload"
               >
                 Get Started
               </a>
             </div>
 
-            {/* Hamburger Menu Button */}
             <div className="block md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -79,26 +85,10 @@ function Header() {
       {isMenuOpen && (
         <nav className="md:hidden bg-white border-t border-gray-200">
           <ul className="flex flex-col p-4 gap-4 text-sm font-semibold">
-            <li>
-              <a className="block text-gray-800 hover:text-[#3A04FF]" href="#">
-                Home
-              </a>
-            </li>
-            <li>
-              <a className="block text-gray-600 hover:text-[#3A04FF]" href="#">
-                Upload
-              </a>
-            </li>
-            <li>
-              <a className="block text-gray-600 hover:text-[#3A04FF]" href="#">
-                About Us
-              </a>
-            </li>
-            <li>
-              <a className="block text-gray-600 hover:text-[#3A04FF]" href="#">
-                Contact Us
-              </a>
-            </li>
+            <li><a className="block text-gray-800 hover:text-[#3A04FF]" href="#">Home</a></li>
+            <li><a className="block text-gray-600 hover:text-[#3A04FF]" href="#">Upload</a></li>
+            <li><a className="block text-gray-600 hover:text-[#3A04FF]" href="#">About Us</a></li>
+            <li><a className="block text-gray-600 hover:text-[#3A04FF]" href="#">Contact Us</a></li>
           </ul>
         </nav>
       )}
