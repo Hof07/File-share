@@ -112,7 +112,7 @@ function FilePreview() {
           to: email,
           subject: `File Shared: ${file.name}`,
           html: `
-  <div
+          <div
     style="
       max-width: 480px;
       margin: 40px auto;
@@ -125,8 +125,8 @@ function FilePreview() {
     "
   >
    
-        <img src="https://file-share-seven-silk.vercel.app/logo.svg" width="150" height="100" alt="Logo" />
-     
+        <img src="https://file-share-seven-silk.vercel.app/logo-mail.png" width="150" height="100" alt="Logo" />
+  
     
 
     <h2>
@@ -156,7 +156,7 @@ function FilePreview() {
       To share your file easily With Anyone
     </p>
   </div>
-`,
+          ` ,
           text: `File Shared: ${file.name}\nDownload: ${baseUrl}/f/${fileid}`,
         }),
       });
