@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import PricingCards from "../(dashboard)/(routes)/upgrade/_components/Card";
 
 function TypingEffect({ words }) {
   const [index, setIndex] = useState(0);
@@ -304,6 +305,25 @@ export default function FullLandingPage() {
           />
         </div>
       </section>
+        
+      <section>
+  <motion.h1
+    initial={{ opacity: 0, y: -20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    className="text-4xl text-center mt-7 font-bold mb-8"
+  >
+    Pricing
+  </motion.h1>
+
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.8, ease: 'easeOut' }}
+  >
+    <PricingCards />
+  </motion.div>
+</section>
 
       {/* FAQ Section */}
       <section className="max-w-5xl mx-auto px-6 sm:px-10 py-20">
