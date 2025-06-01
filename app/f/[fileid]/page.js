@@ -8,11 +8,11 @@ import 'react-toastify/dist/ReactToastify.css'
 import bcrypt from 'bcryptjs'
 import Image from 'next/image'
 import { DownloadIcon } from 'lucide-react'
-import { useUser } from '@clerk/nextjs';
-
+import { useUser } from '@clerk/nextjs'
 
 export default function FileDownloadPage() {
   const { fileid } = useParams()
+  const { user } = useUser() // ✅ Clerk user added
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [passwordInput, setPasswordInput] = useState('')
@@ -85,13 +85,13 @@ export default function FileDownloadPage() {
 
         {/* Title */}
         <h1 className="text-lg font-semibold mb-1">
-          <span className="text-blue-600">{user?.firstName || 'Someone'}</span> Shared the file with You
+          <span className="text-blue-600">{user?.firstName || 'Someone'}</span> shared a file with you
         </h1>
         <p className="text-sm text-gray-500 mb-5">Find file details below</p>
 
         {/* File Icon */}
         <div className="flex justify-center mb-4">
-          <Image src="/dow.gif"  width={100} height={50} />
+          <Image src="/dow.gif" alt="Download" width={100} height={50} />
         </div>
 
         {/* File Info */}
@@ -127,7 +127,7 @@ export default function FileDownloadPage() {
         )}
 
         {/* Footer */}
-        <p className="text-xs text-gray-400 mt-5">*Terms and Condition apply</p>
+        <p className="text-xs text-gray-400 mt-5">*Terms and Conditions apply</p>
 
         <ToastContainer position="top-center" />
       </div>
