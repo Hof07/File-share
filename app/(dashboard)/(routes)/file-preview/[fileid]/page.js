@@ -21,7 +21,7 @@ function FilePreview() {
   const [sendingNewsletter, setSendingNewsletter] = useState(false);
   const { user } = useUser();
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const baseUrl = `https://file-share-seven-silk.vercel.app/`;
 
   useEffect(() => {
     async function fetchFile() {
