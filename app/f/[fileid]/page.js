@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import bcrypt from 'bcryptjs'
 import Image from 'next/image'
 import { DownloadIcon } from 'lucide-react'
+import { useUser } from '@clerk/nextjs';
+
 
 export default function FileDownloadPage() {
   const { fileid } = useParams()
@@ -83,7 +85,7 @@ export default function FileDownloadPage() {
 
         {/* Title */}
         <h1 className="text-lg font-semibold mb-1">
-          <span className="text-blue-600">Game Play</span> Shared the file with You
+          <span className="text-blue-600">{user?.firstName || 'Someone'}</span> Shared the file with You
         </h1>
         <p className="text-sm text-gray-500 mb-5">Find file details below</p>
 

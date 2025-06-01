@@ -132,7 +132,7 @@ export default function FullLandingPage() {
           className="text-5xl font-extrabold mb-4"
         >
           Upload, Save,{" "}
-          <TypingEffect words={["Share", "Protect", "Send"]} />
+          <TypingEffect words={["Share", "Protect", "Send","Zips","Codes"]} />
         </motion.h1>
         <p className="max-w-xl mx-auto text-lg mb-12">
           Secure and simple file sharing for everyone.
