@@ -86,7 +86,7 @@ function FilePreview() {
 
   const copyToClipboard = () => {
     if (fileid) {
-      const shortUrl = `${baseUrl}/f/${fileid}`;
+      const shortUrl = `http://file-share-seven-silk.vercel.app/f/${fileid}`;
       navigator.clipboard.writeText(shortUrl);
       toast.success('URL copied to clipboard!');
     }
@@ -136,7 +136,7 @@ function FilePreview() {
     </h2>
     <h3 style="text-align: center; margin-bottom: 50px">${file.name}</h3>
     <a
-      href="${baseUrl}/f/${fileid}"
+      href="http://file-share-seven-silk.vercel.app/f/${fileid}"
       style="
         background: #007bff;
         color: #fff;
@@ -158,7 +158,7 @@ function FilePreview() {
     </p>
   </div>
           ` ,
-          text: `File Shared: ${file.name}\nDownload: ${baseUrl}/f/${fileid}`,
+          text: `File Shared: ${file.name}\nDownload: https://file-share-seven-silk.vercel.app//f/${fileid}`,
         }),
       });
 
@@ -217,7 +217,7 @@ function FilePreview() {
                 <input
                   type="text"
                   readOnly
-                  value={`${baseUrl}/f/${fileid}`}
+                  value={`https://file-share-seven-silk.vercel.app//f/${fileid}`}
                   className="border p-2 rounded w-full"
                   onFocus={(e) => e.target.select()}
                 />

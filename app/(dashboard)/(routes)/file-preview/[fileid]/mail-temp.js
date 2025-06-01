@@ -14,7 +14,7 @@ import {
 import * as React from 'react';
 
 function ProductEmail({ fileName, fileId, baseUrl }) {
-  const downloadUrl = `${baseUrl}/f/${fileId}`;
+  const downloadUrl = `https://file-share-seven-silk.vercel.app//f/${fileId}`;
 
   return (
     <Html>
