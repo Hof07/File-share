@@ -129,3 +129,16 @@ body {
   background-size: 200% 200%;
   animation: gradient-move 5s ease infinite;
 }
+
+@keyframes dragGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.drag-animate {
+  background: linear-gradient(270deg, rgba(0,140,255,0.2), rgba(255,255,255,0.1), rgba(0,140,255,0.2));
+  background-size: 600% 600%;
+  animation: dragGlow 5s ease infinite;
+  backdrop-filter: blur(4px);
+}

@@ -20,6 +20,7 @@ function UploadForm({ onUploadSuccess }) {
   const [zipName, setZipName] = useState('')
   const [asZip, setAsZip] = useState(true)
   const [uploading, setUploading] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
 
   const handleFileChange = (event) => {
     const selectedFiles = Array.from(event.target.files || [])
@@ -28,8 +29,32 @@ function UploadForm({ onUploadSuccess }) {
       toast.error('One or more files exceed 2MB!')
       return
     }
-    setFiles(selectedFiles)
+    setFiles(prev => [...prev, ...selectedFiles])
     setUploaded(false)
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    const droppedFiles = Array.from(e.dataTransfer.files || [])
+    const isTooLarge = droppedFiles.some(f => f.size > 2 * 1024 * 1024)
+    if (isTooLarge) {
+      toast.error('One or more files exceed 2MB!')
+      return
+    }
+    setFiles(prev => [...prev, ...droppedFiles])
+    setUploaded(false)
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = () => {
+    setIsDragging(false)
   }
 
   const uploadSingleFile = async (file) => {
@@ -51,16 +76,13 @@ function UploadForm({ onUploadSuccess }) {
 
     const publicURL = publicData.publicUrl
 
-    // DB insert with random_id added here
-    const { data, error } = await supabase.from('files').insert([
-      { 
-        name: file.name, 
-        url: publicURL, 
-        uploaded_at: new Date(), 
-        email: email,
-        random_id: generateCode()  // <-- added random_id here
-      },
-    ]).select().single()
+    const { data, error } = await supabase.from('files').insert([{
+      name: file.name,
+      url: publicURL,
+      uploaded_at: new Date(),
+      email: email,
+      random_id: generateCode()
+    }]).select().single()
 
     if (error) {
       toast.error('DB insert failed: ' + error.message)
@@ -106,16 +128,13 @@ function UploadForm({ onUploadSuccess }) {
 
     const publicURL = publicData.publicUrl
 
-    // DB insert with random_id for ZIP
-    const { data, error } = await supabase.from('files').insert([
-      { 
-        name: `${zipName}.zip`, 
-        url: publicURL, 
-        uploaded_at: new Date(), 
-        email: email,
-        random_id: generateCode()  // <-- added random_id here too
-      },
-    ]).select().single()
+    const { data, error } = await supabase.from('files').insert([{
+      name: `${zipName}.zip`,
+      url: publicURL,
+      uploaded_at: new Date(),
+      email: email,
+      random_id: generateCode()
+    }]).select().single()
 
     if (error) {
       toast.error('DB insert failed: ' + error.message)
@@ -137,7 +156,6 @@ function UploadForm({ onUploadSuccess }) {
 
   const uploadHandler = async () => {
     if (files.length === 0) return
-
     setUploading(true)
 
     try {
@@ -153,7 +171,6 @@ function UploadForm({ onUploadSuccess }) {
           await uploadZip()
         } else {
           const uploadedUrls = []
-
           for (const file of files) {
             const url = await uploadSingleFile(file)
             if (url) uploadedUrls.push(url)
@@ -178,18 +195,40 @@ function UploadForm({ onUploadSuccess }) {
     <div className="p-5 px-8 md:px-28 text-center">
       <ToastContainer position="top-center" />
 
+      <style jsx>{`
+        @keyframes dragGlow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        .drag-animate {
+          background: linear-gradient(270deg, rgba(0,140,255,0.2), rgba(255,255,255,0.1), rgba(0,140,255,0.2));
+          background-size: 600% 600%;
+          animation: dragGlow 5s ease infinite;
+          backdrop-filter: blur(4px);
+        }
+      `}</style>
+
       {uploaded ? (
         <div className="flex flex-col items-center justify-center mt-10">
-          <Image src={'/ser.gif'} width={100} height={50} />
+          <Image src={'/ser.gif'} width={100} height={50} alt="upload-success" />
         </div>
       ) : (
         <>
           <h2 className='text-[20px] text-center m-5'>Start <strong className='text-primary'>Uploading</strong> Files and <strong className='text-primary'>Share</strong> It</h2>
 
-          <div className="flex items-center justify-center w-full">
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`flex items-center justify-center w-full transition-all duration-300 
+              border-2 border-primary border-dashed rounded-lg cursor-pointer hover:bg-blue-100 h-64 
+              ${isDragging ? 'drag-animate' : 'bg-blue-50'}`}
+          >
             <label
               htmlFor="dropzone-file"
-              className="flex flex-col items-center justify-center w-full h-64 border-2 border-primary border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100"
+              className="flex flex-col items-center justify-center w-full h-full"
             >
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <svg className="w-12 h-12 mb-4 text-blue-500" fill="none" viewBox="0 0 20 16" xmlns="http://www.w3.org/2000/svg">
