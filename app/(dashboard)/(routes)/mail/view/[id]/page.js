@@ -29,9 +29,7 @@ export default function ViewMailPage() {
       <Query1 />
 
       <h1 className="text-xl font-bold mb-2">{mail.subject}</h1>
-      <p className="text-sm text-gray-500 mb-4">
-        From: {mail.from} | Date: {mail.date}
-      </p>
+     
       <p className="text-lg text-gray-800">{mail.message}</p>
     </div>
   );
