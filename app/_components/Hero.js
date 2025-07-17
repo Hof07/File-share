@@ -2,8 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import PricingCards from "../(dashboard)/(routes)/upgrade/_components/Card";
+import AuraCard from "./AURA";
+import BUTTON from "./btn";
+import { useRouter } from "next/navigation";
 
 function TypingEffect({ words }) {
+  
   const [index, setIndex] = useState(0);
   const [subIndex, setSubIndex] = useState(0);
   const [blink, setBlink] = useState(true);
@@ -80,6 +84,7 @@ function StatisticCard({ number, label, delay }) {
   );
 }
 
+
 function TestimonialCard({ name, role, text, delay }) {
   return (
     <motion.div
@@ -137,7 +142,7 @@ export default function FullLandingPage() {
         <p className="max-w-xl mx-auto text-lg mb-12">
           Secure and simple file sharing for everyone.
         </p>
-        <button className="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-indigo-50 transition">
+        <button   className="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-indigo-50 transition">
           Get Started
         </button>
         <div className="absolute bottom-10 animate-bounce">
@@ -253,7 +258,19 @@ export default function FullLandingPage() {
   </div>
 </section>
 
+{/* AURA AI */}
 
+<div>
+  
+  <AuraCard delay={0.2} />
+</div>
+{/*     align-items: center;
+    justify-content: center;
+    text-align: center;
+    top: 48px;
+    position: relative;
+    height: 10vh;
+    font-size: 41px; */}
       {/* Statistics Section */}
       <section className="py-20 bg-white px-6 sm:px-10">
         <motion.h2
@@ -325,6 +342,9 @@ export default function FullLandingPage() {
   </motion.div>
 </section>
 
+
+
+
       {/* FAQ Section */}
       <section className="max-w-5xl mx-auto px-6 sm:px-10 py-20">
         <motion.h2
@@ -344,7 +364,7 @@ export default function FullLandingPage() {
           />
           <FAQItem
             question="Do I need to create an account?"
-            answer="No, you can upload and share files instantly without signing up."
+            answer="Yes, after you can upload and share files instantly."
             delay={0.1}
           />
           <FAQItem
@@ -354,7 +374,7 @@ export default function FullLandingPage() {
           />
           <FAQItem
             question="Is there a file size limit?"
-            answer="Currently, the max file size is 5GB per upload."
+            answer="If YOu Are Blaze User Than it's FReee."
             delay={0.3}
           />
         </div>

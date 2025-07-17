@@ -91,7 +91,7 @@ export default function FileDownloadPage() {
 
         {/* File Icon */}
         <div className="flex justify-center mb-4">
-          <Image src="/dow.gif" alt="Download" width={100} height={50} />
+          <Image src="https://jmp.sh/lAH1Bl08" alt="Download" width={100} height={50} />
         </div>
 
         {/* File Info */}
