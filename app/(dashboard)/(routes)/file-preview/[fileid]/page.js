@@ -57,32 +57,33 @@ function FilePreview() {
   }, [fileid]);
 
   const handleSavePassword = async () => {
-    if (!password) {
-      toast.error('Please enter a password');
-      return;
-    }
-    setSavingPassword(true);
-    try {
-      const salt = bcrypt.genSaltSync(10);
-      const hashedPassword = bcrypt.hashSync(password, salt);
+  if (!password) {
+    toast.error('Please enter a password');
+    return;
+  }
+  setSavingPassword(true);
+  try {
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
 
-      const { error } = await supabase
-        .from('files')
-        .update({ password: hashedPassword })
-        .eq('random_id', fileid);
+    const { error } = await supabase
+      .from('files')
+      .update({ password: hashedPassword })
+      .eq('id', fileid); // 👈 changed from 'random_id' to 'id'
 
-      if (error) {
-        toast.error('Failed to save password: ' + error.message);
-      } else {
-        toast.success('Password saved successfully!');
-        setUsePassword(true);
-        setPassword('');
-      }
-    } catch (err) {
-      toast.error('Error saving password');
+    if (error) {
+      toast.error('Failed to save password: ' + error.message);
+    } else {
+      toast.success('Password saved successfully!');
+      setUsePassword(true);
+      setPassword('');
     }
-    setSavingPassword(false);
-  };
+  } catch (err) {
+    toast.error('Error saving password');
+  }
+  setSavingPassword(false);
+};
+
 
   const copyToClipboard = () => {
     if (fileid) {
