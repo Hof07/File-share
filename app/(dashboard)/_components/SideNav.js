@@ -1,6 +1,6 @@
 'use client'
 
-import { File, Mail, Search, Shield, Upload } from 'lucide-react'
+import { File, LucideBookOpen, Mail, Search, Shield, Upload } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
@@ -21,6 +21,7 @@ function SideNav() {
     { id: 3, name: 'Upgrade', icon: Shield, path: '/upgrade' },
     { id: 4, name: 'Shares', icon: Mail, path: '/mail' },
     { id: 5, name: 'Find', icon: Search, path: '/search' },
+    { id: 6,name : 'Book', icon: LucideBookOpen, path: '/books'},
     {
       id: 6,
       name: 'Generative',

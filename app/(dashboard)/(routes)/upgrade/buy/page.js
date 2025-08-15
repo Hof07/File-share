@@ -1,118 +1,152 @@
-'use client'
 
-import Image from 'next/image';
-import React, { useState } from 'react';
+
+"use client";
+
+import Image from "next/image";
+import React, { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+import { useUser } from "@clerk/nextjs";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 function Page() {
+  const { user } = useUser();
   const [paymentMethod, setPaymentMethod] = useState("card");
+  const [promoCode, setPromoCode] = useState("");
+  const [loading, setLoading] = useState(false);
   const [cardNumber, setCardNumber] = useState("");
+  const [message, setMessage] = useState("");
 
+  const handleContinue = async () => {
+    setMessage("");
+
+    if (paymentMethod !== "promo") {
+      alert("This payment method is not active yet.");
+      return;
+    }
+
+    if (!promoCode.trim()) {
+      setMessage("❌ Please enter a promo code");
+      return;
+    }
+
+    if (promoCode.trim() !== "AURA48512") {
+      setMessage("❌ Invalid promo code. Access denied.");
+      return;
+    }
+
+    if (!user?.primaryEmailAddress?.emailAddress) {
+      setMessage("❌ No user email found. Please log in.");
+      return;
+    }
+
+    setLoading(true);
+
+    const startDate = new Date();
+    const expiryDate = new Date();
+    expiryDate.setDate(startDate.getDate() + 30);
+
+    const { error } = await supabase.from("payment_subscriptions").insert([
+      {
+        email: user.primaryEmailAddress.emailAddress,
+        method: "promo",
+        promo_code: promoCode,
+        subscription_start: startDate.toISOString(),
+        subscription_expiry: expiryDate.toISOString(),
+        is_active: true
+      }
+    ]);
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+      setMessage("❌ Error: " + (error.message || JSON.stringify(error)));
+    } else {
+      setMessage("✅ Promo applied! Subscription active for 30 days.");
+      setPromoCode("");
+    }
+
+    setLoading(false);
+  };
   const handleCardNumberChange = (e) => {
-    let value = e.target.value;
-    // Numbers and spaces only
-    value = value.replace(/[^\d\s]/g, '');
 
-    // Insert space every 4 digits
-    value = value.replace(/\s+/g, '').replace(/(.{4})/g, '$1 ').trim();
+    let value = e.target.value.replace(/\D/g, "");
+
+
+    value = value.replace(/(.{4})/g, "$1 ").trim();
 
     setCardNumber(value);
   };
-
   return (
     <div>
       <div className="p-6 pt-0 grid gap-6">
         {/* Payment Methods */}
-        <div role="radiogroup" dir="ltr" className="grid grid-cols-4 gap-4" tabIndex={0}>
+        <div role="radiogroup" dir="ltr" className="grid grid-cols-4 gap-4">
           {/* Card */}
           <div>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={paymentMethod === "card"}
-              data-state={paymentMethod === "card" ? "checked" : "unchecked"}
-              value="card"
-              onClick={() => setPaymentMethod("card")}
-              className="sr-only"
-              id="card"
-              aria-label="Card"
-            />
             <label
               htmlFor="card"
-              className={`text-sm font-medium flex flex-col items-center justify-center min-h-[120px] w-full rounded-md border-2 p-4 cursor-pointer ${paymentMethod === "card" ? "border-primary bg-blue-50" : "border-muted"
+              className={`text-sm font-medium flex flex-col items-center justify-center min-h-[120puu
+                x] w-full rounded-md border-2 p-4 cursor-pointer ${paymentMethod === "card"
+                  ? "border-primary bg-blue-50"
+                  : "border-muted"
                 }`}
               onClick={() => setPaymentMethod("card")}
             >
-              <Image width={32} height={20} src={'/card.svg'} alt='card' />
+              <Image src={"/card.svg"} width={32} height={20} alt="card" />
               Card
             </label>
           </div>
 
           {/* Paypal */}
           <div>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={paymentMethod === "paypal"}
-              data-state={paymentMethod === "paypal" ? "checked" : "unchecked"}
-              value="paypal"
-              onClick={() => setPaymentMethod("paypal")}
-              className="sr-only"
-              id="paypal"
-              aria-label="Paypal"
-            />
             <label
               htmlFor="paypal"
-              className={`text-sm font-medium flex flex-col items-center justify-center min-h-[120px] w-full rounded-md border-2 p-4 cursor-pointer ${paymentMethod === "paypal" ? "border-primary bg-blue-50" : "border-muted"
+              className={`text-sm font-medium flex flex-col items-center justify-center min-h-[120px] w-full rounded-md border-2 p-4 cursor-pointer ${paymentMethod === "paypal"
+                ? "border-primary bg-blue-50"
+                : "border-muted"
                 }`}
               onClick={() => setPaymentMethod("paypal")}
             >
-              <Image src={'/paypal.svg'} width={32} height={20} alt='paypal' className="mb-2" />
+              <Image
+                src={"/paypal.svg"}
+                width={32}
+                height={20}
+                alt="paypal"
+                className="mb-2"
+              />
               Paypal
             </label>
           </div>
 
           {/* Apple Pay */}
           <div>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={paymentMethod === "apple"}
-              data-state={paymentMethod === "apple" ? "checked" : "unchecked"}
-              value="apple"
-              onClick={() => setPaymentMethod("apple")}
-              className="sr-only"
-              id="apple"
-              aria-label="Apple"
-            />
             <label
               htmlFor="apple"
-              className={`text-sm font-medium flex flex-col items-center justify-center min-h-[120px] w-full rounded-md border-2 p-4 cursor-pointer ${paymentMethod === "apple" ? "border-primary bg-gray-100" : "border-muted"
+              className={`text-sm font-medium flex flex-col items-center justify-center min-h-[120px] w-full rounded-md border-2 p-4 cursor-pointer ${paymentMethod === "apple"
+                ? "border-primary bg-gray-100"
+                : "border-muted"
                 }`}
               onClick={() => setPaymentMethod("apple")}
             >
-              <Image src={'/apple.svg'} width={32} height={20} alt='apple' />
+              <Image src={"/apple.svg"} width={32} height={20} alt="apple" />
               Apple Pay
             </label>
           </div>
 
           {/* Promo Code */}
           <div>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={paymentMethod === "promo"}
-              className="sr-only"
-              id="promo"
-              aria-label="Promo"
-              onClick={() => setPaymentMethod("promo")}
-            />
             <label
               htmlFor="promo"
-              className={`text-sm font-medium flex flex-col items-center justify-center min-h-[120px] w-full rounded-md border-2 p-4 cursor-pointer ${paymentMethod === "promo" ? "border-primary bg-blue-50" : "border-muted"
+              className={`text-sm font-medium flex flex-col items-center justify-center min-h-[120px] w-full rounded-md border-2 p-4 cursor-pointer ${paymentMethod === "promo"
+                ? "border-primary bg-blue-50"
+                : "border-muted"
                 }`}
               onClick={() => setPaymentMethod("promo")}
             >
-              <Image src={'/voucher.png'} width={32} height={20} alt='promo' />
+              <Image src={"/voucher.png"} width={32} height={20} alt="promo" />
               Promo Code
             </label>
           </div>
@@ -190,7 +224,6 @@ function Page() {
           </>
         )}
 
-        {/* Apple Pay Fields */}
         {paymentMethod === "apple" && (
           <>
             <div className="grid gap-2">
@@ -216,29 +249,40 @@ function Page() {
         {/* Promo Code Field */}
         {paymentMethod === "promo" && (
           <div className="grid gap-2">
-            <label htmlFor="promo-code" className="text-sm font-medium">Enter Promo Code</label>
-            <input id="promo-code" placeholder="PROMO2025" className="h-9 w-full rounded-md border px-3 py-1 text-base shadow-sm" />
+            <label htmlFor="promo-code" className="text-sm font-medium">
+              Enter Promo Code
+            </label>
+            <input
+              id="promo-code"
+              placeholder="PROMO2025"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              className="h-9 w-full rounded-md border px-3 py-1 text-base shadow-sm"
+            />
           </div>
         )}
       </div>
 
       {/* Continue Button */}
       <div className="flex items-center p-6 pt-0">
-        <button className="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-white shadow hover:bg-primary/90 h-9 px-4 py-2 w-full">
-          {paymentMethod === "paypal" ? (
-            <>
-              Pay with{' '}
-              <Image src="/white_paypal.png" alt="PayPal" width={24} height={16} />
-            </>
-          ) : paymentMethod === "apple" ? (
-            "Pay with Apple Pay"
-          ) : paymentMethod === "promo" ? (
-            "Apply Promo Code"
-          ) : (
-            "Continue"
-          )}
+        <button
+          onClick={handleContinue}
+          disabled={loading}
+          className="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-white shadow hover:bg-primary/90 h-9 px-4 py-2 w-full"
+        >
+          {loading
+            ? "Processing..."
+            : paymentMethod === "paypal"
+              ? "Pay with PayPal"
+              : paymentMethod === "apple"
+                ? "Pay with Apple Pay"
+                : paymentMethod === "promo"
+                  ? "Apply Promo Code"
+                  : "Pay with Card"}
         </button>
       </div>
+
+      {message && <p className="text-center mt-2">{message}</p>}
     </div>
   );
 }

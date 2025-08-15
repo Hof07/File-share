@@ -92,13 +92,14 @@ function Search() {
                 />
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText(`https://file-share-seven-silk.vercel.app//f/${fileData.id}`)
-                    toast('URL copied to clipboard!')
+                    const url = `https://file-share-seven-silk.vercel.app/f/${fileData.id}`;
+                    window.open(url, "_blank"); 
                   }}
                   className='bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition'
                 >
-                  Copy
+                  Open
                 </button>
+
               </div>
             </div>
           )}

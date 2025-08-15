@@ -19,7 +19,15 @@ const emails = [
     unread: true,
     tag: "New",
   },
-  // ...more
+  {
+    id: "3",
+    from: "Share.io@gmail.com",
+    subject:"Free Premium For Users!",
+    message: "get free premium of unlimited file Upload!",
+    date: "Aug 14",
+    unread: true,
+    tag: "Free "
+  }
 ];
 
 export default function Page() {

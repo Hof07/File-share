@@ -1,12 +1,10 @@
 "use client";
 import Query1 from "@/app/main/_components/query1";
+import Query2 from "@/app/main/_components/query2"; // Import Query2
 import { useParams } from "next/navigation";
-// import Query1 from "../_component/Query1"; // adjust path if needed
 
 const emails = [
-  {
-    id: "1",
-  },
+  { id: "1" },
   {
     id: "2",
     from: "mailingservice...",
@@ -14,7 +12,13 @@ const emails = [
     message: "Hello ansh, Your password is: ecaa23be7bc4...",
     date: "Apr 12",
   },
-  // more...
+  {
+    id: "3",
+    from: "Share.io@gmail.com",
+    // subject: "",
+    message: "get free premium of unlimited file Upload!",
+    date: "Aug 14",
+  },
 ];
 
 export default function ViewMailPage() {
@@ -25,11 +29,10 @@ export default function ViewMailPage() {
 
   return (
     <div className="p-8 bg-white min-h-screen">
-      {/* Render Query1 on top or wherever you want */}
-      <Query1 />
+      {/* Conditionally render Query1 or Query2 */}
+      {id === "3" ? <Query2 /> : <Query1 />}
 
       <h1 className="text-xl font-bold mb-2">{mail.subject}</h1>
-     
       <p className="text-lg text-gray-800">{mail.message}</p>
     </div>
   );
