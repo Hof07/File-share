@@ -6,6 +6,7 @@ import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Progress } from '@/components/ui/progress'
 import useUploadCount from '../(routes)/upload/_components/useUploadCount'
+import Link from 'next/link'
 
 const MAX_UPLOADS = 5
 
@@ -61,7 +62,9 @@ function SideNav() {
       {/* Logo Section */}
       <div>
         <div className='p-5 border-b'>
-          <Image src='/logo.svg' width={150} height={100} alt='logo' />
+          <Link href={'/'} >
+            <Image src='/logo.svg' width={150} height={100} alt='logo' />
+          </Link>
         </div>
 
         {/* Menu Items */}
