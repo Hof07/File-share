@@ -15,11 +15,27 @@ export default function FilesPage() {
   const [files, setFiles] = useState([])
   const [loading, setLoading] = useState(true)
   const [removingId, setRemovingId] = useState(null)
+  const [isPremium, setIsPremium] = useState(false)
 
   useEffect(() => {
-    const fetchFiles = async () => {
+    const fetchFilesAndCheckSub = async () => {
       if (!user?.primaryEmailAddress?.emailAddress) return
 
+      // 1️⃣ Check subscription table for premium status
+      const { data: subData, error: subError } = await supabase
+        .from('payment_subscriptions')
+        .select('id')
+        .eq('email', user.primaryEmailAddress.emailAddress) 
+        .eq('is_active', true)
+        .maybeSingle()
+
+      if (subError) {
+        console.error('❌ Subscription check error:', subError.message)
+      } else {
+        setIsPremium(!!subData)
+      }
+
+      // 2️⃣ Fetch files
       const { data, error } = await supabase
         .from('files')
         .select('*')
@@ -34,7 +50,7 @@ export default function FilesPage() {
       setLoading(false)
     }
 
-    if (isSignedIn) fetchFiles()
+    if (isSignedIn) fetchFilesAndCheckSub()
   }, [isSignedIn, user])
 
   const handleRemove = async (fileId) => {
@@ -91,7 +107,6 @@ export default function FilesPage() {
         return
       }
 
-      // ✅ Remove from UI without reload
       setFiles((prev) => prev.filter((f) => f.id !== fileId))
     } finally {
       setRemovingId(null)
@@ -113,7 +128,13 @@ export default function FilesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Welcome, {user.firstName || 'User'} 👋</h1>
+          <h1
+            className={`text-3xl font-bold ${
+              isPremium ? 'text-yellow-500 drop-shadow-lg' : 'text-gray-800'
+            }`}
+          >
+            Welcome, {user.firstName || 'User'} 👋
+          </h1>
           <p className="text-gray-600">Here are your uploaded files</p>
         </div>
         <UserButton afterSignOutUrl="/" />
@@ -137,7 +158,6 @@ export default function FilesPage() {
               <p className="text-sm text-gray-400">Uploaded: {new Date(file.uploaded_at).toLocaleDateString()}</p>
               <p className="text-sm font-mono text-blue-700 mt-2">ID: {file.random_id}</p>
 
-              {/* Download button with Supabase file link */}
               <a
                 href={file.url}
                 target="_blank"
@@ -147,7 +167,6 @@ export default function FilesPage() {
                 Download
               </a>
 
-              {/* Remove button */}
               <button
                 onClick={() => handleRemove(file.id)}
                 disabled={removingId === file.id}

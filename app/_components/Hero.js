@@ -5,6 +5,7 @@ import PricingCards from "../(dashboard)/(routes)/upgrade/_components/Card";
 import AuraCard from "./AURA";
 import BUTTON from "./btn";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function TypingEffect({ words }) {
   
@@ -142,9 +143,11 @@ export default function FullLandingPage() {
         <p className="max-w-xl mx-auto text-lg mb-12">
           Secure and simple file sharing for everyone.
         </p>
-        <button   className="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-indigo-50 transition">
+        <Link href={'/upload'}>
+          <button   className="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-indigo-50 transition">
           Get Started
         </button>
+        </Link>
         <div className="absolute bottom-10 animate-bounce">
           <svg
             className="w-8 h-8 text-white"
