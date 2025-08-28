@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react"
 import { supabase } from "@/app/lib/superbaseClient"
+import { Download } from "lucide-react"
 
 export default function BookSearch() {
   const [semester, setSemester] = useState("")
@@ -96,32 +97,45 @@ export default function BookSearch() {
             <p className="text-center text-red-500 mt-6">{error}</p>
           ) : (
             books.length > 0 && (
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {books.map((book) => (
                   <div
                     key={book.id}
-                    className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-300 border border-gray-200 flex flex-col items-center"
+                    className="relative bg-white/80 backdrop-blur-md rounded-2xl shadow-lg flex flex-col border border-gray-200 hover:shadow-2xl hover:scale-[1.02] transition duration-300"
                   >
-                    <img
-                      src={book.img_url}
-                      alt={book.name}
-                      className="w-28 h-36 object-cover rounded mb-4"
-                    />
-                    <h2 className="text-lg font-semibold text-gray-800 text-center">
-                      {book.name}
-                    </h2>
-                    <p className="text-sm text-gray-500 mb-4">
-                      Semester {book.semester}
-                    </p>
+                    {/* Book Image → Full width */}
+                    <div className="w-full h-56 overflow-hidden rounded-t-2xl">
+                      <img
+                        src={book.img_url}
+                        alt={book.name}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
 
-                    <a
-                      href={book.book_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-auto bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-center transition w-full"
-                    >
-                      Download
-                    </a>
+                    {/* Book Info */}
+                    <div className="p-6 flex flex-col items-center">
+                      <h2 className="text-lg font-bold text-gray-800 text-center line-clamp-2">
+                        {book.name}
+                      </h2>
+                      <p className="text-sm text-gray-500 mb-4">
+                        Semester {book.semester}
+                      </p>
+
+                      {/* Download Button */}
+                      <a
+                        href={book.book_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-auto w-full bg-gradient-to-r from-indigo-500 via-blue-600 to-indigo-600 
+             hover:from-indigo-600 hover:via-blue-700 hover:to-indigo-700 
+             text-white py-3 px-5 rounded-2xl text-center font-semibold 
+             shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 
+             flex items-center justify-center gap-2 transform hover:scale-105"
+                      >
+                        <Download className="w-5 h-5" /> Download
+                      </a>
+
+                    </div>
                   </div>
                 ))}
               </div>
