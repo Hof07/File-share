@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react"
 import { supabase } from "@/app/lib/superbaseClient"
-import { Download } from "lucide-react"
+import { Download, ArrowLeft } from "lucide-react"
 
 export default function BookSearch() {
   const [semester, setSemester] = useState("")
@@ -51,6 +51,14 @@ export default function BookSearch() {
     setBooks(data)
   }
 
+  // 👉 Back Button Handler
+  const handleBack = () => {
+    setSubmitted(false)
+    setBooks([])
+    setSemester("")
+    setError("")
+  }
+
   return (
     <div className="bg-transparent p-6">
       {/* Form Section → visible only if not submitted */}
@@ -91,13 +99,24 @@ export default function BookSearch() {
       {/* Books Grid → visible only after submit */}
       {submitted && (
         <>
+          {/* 🔙 Back Button */}
+          <div className="mb-6">
+            <button
+              onClick={handleBack}
+              className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              Back
+            </button>
+          </div>
+
           {loading ? (
             <p className="text-center text-gray-500 mt-6">Loading books...</p>
           ) : error ? (
             <p className="text-center text-red-500 mt-6">{error}</p>
           ) : (
             books.length > 0 && (
-              <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {books.map((book) => (
                   <div
                     key={book.id}
@@ -134,7 +153,6 @@ export default function BookSearch() {
                       >
                         <Download className="w-5 h-5" /> Download
                       </a>
-
                     </div>
                   </div>
                 ))}
