@@ -16,7 +16,7 @@ export default function SignInPage() {
     <div
       className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
       style={{
-        backgroundImage: "url('/logos.jpg')", 
+        background: 'transparent', 
       }}
     >
       {/* Blur Overlay */}
