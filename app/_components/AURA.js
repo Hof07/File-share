@@ -1,11 +1,10 @@
 'use client'
 import styled from 'styled-components'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const StyledWrapper = styled.div`
   position: relative;
   padding: 100px 0;
-  
 
   .card-container {
     width: 100%;
@@ -111,26 +110,72 @@ const StyledWrapper = styled.div`
       opacity: 0;
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-container,
+    .icon,
+    .bubble {
+      animation: none;
+    }
+    .bubble {
+      display: none;
+    }
+  }
 `
 
+const BUBBLE_COUNT = 20
+const MAX_SCALE = 1.5 // must match the scale() in @keyframes floatUp
+
+/**
+ * Random values are generated after mount, not during render.
+ * Generating them during render makes the server HTML and the client HTML
+ * differ, which causes a hydration warning in Next.js.
+ */
+function createBubbles(count) {
+  return Array.from({ length: count }, (_, id) => ({
+    id,
+    size: 10 + Math.random() * 30,
+    position: Math.random(), // 0 = far left, 1 = far right
+    duration: 5 + Math.random() * 10,
+    delay: Math.random() * 5,
+    bottom: -80 + Math.random() * 50,
+  }))
+}
+
 const Bubbles = () => {
+  const [bubbles, setBubbles] = useState([])
+
+  useEffect(() => {
+    setBubbles(createBubbles(BUBBLE_COUNT))
+  }, [])
+
   return (
     <>
-      {[...Array(20)].map((_, i) => {
-        const size = 10 + Math.random() * 30
-        const left = Math.random() * 100
-        const duration = 5 + Math.random() * 10
-        const delay = Math.random() * 5
-        const bottom = -80 + Math.random() * 50 // adjusted for smooth floating start
+      {bubbles.map(({ id, size, position, duration, delay, bottom }) => {
+        /*
+         * ROOT CAUSE OF THE HORIZONTAL SCROLLBAR
+         * Before: left was a plain percentage (0-100%), so a bubble placed near
+         * the right edge was already wider than the space left, and then
+         * scale(1.5) pushed it further. That extended the scrollable width of
+         * the page.
+         *
+         * Now: the bubble's left edge is picked from a range that leaves room
+         * for its own width AND the extra growth from scale(), so even at full
+         * size it stays inside the wrapper on both sides.
+         */
+        const growth = (size * (MAX_SCALE - 1)) / 2
+        const usable = `(100% - ${size + growth * 2}px)`
+        const left = `calc(${usable} * ${position} + ${growth}px)`
 
         return (
           <div
-            key={i}
+            key={id}
             className="bubble"
+            aria-hidden="true"
             style={{
               width: `${size}px`,
               height: `${size}px`,
-              left: `${left}%`,
+              left,
               bottom: `${bottom}px`,
               animationDuration: `${duration}s`,
               animationDelay: `${delay}s`,
@@ -148,7 +193,13 @@ export default function AuraCard() {
       <Bubbles />
       <div className="card-container">
         <div className="logo">
-          <svg viewBox="0 0 24 24" className="icon" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 24 24"
+            className="icon"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+          >
             <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245Z" />
           </svg>
           <span className="text">AURA</span>

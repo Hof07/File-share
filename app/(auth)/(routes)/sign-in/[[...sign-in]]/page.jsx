@@ -19,10 +19,9 @@ export default function SignInPage() {
         backgroundImage: "url('/logos.jpg')", 
       }}
     >
-      {/* Blur Overlay */}
+      
       <div className="absolute inset-0 bg-black/40 backdrop-blur-md" />
 
-      {/* SignIn Box */}
       <div className="relative z-10 p-6 rounded-2xl shadow-xl bg-white/10 backdrop-blur-lg">
         <SignIn path="/sign-in" routing="path" />
       </div>
