@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import Hero from './_components/Hero'
-
+import './globals.css'
 export default function Home() {
   return (
     <div >
-      
+
       <Hero />
     </div>
 

@@ -1,31 +1,50 @@
 'use client'
 
 import { UserButton } from '@clerk/nextjs'
-import { AlignJustify } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React from 'react'
+import Logo from './Logo'
+import { MENU_LIST } from './nav-items.js'
 
-function TopHeader() {
+function TopHeader({ menuOpen = false, onMenuClick }) {
+  const pathname = usePathname() || ''
+  const current = MENU_LIST.find((item) => pathname.startsWith(item.path))
+  const title = current ? current.name : 'Dashboard'
+
   return (
-    <header className='flex items-center justify-between p-4 border-b bg-white sticky top-0 z-40'>
-      {/* Left Section: Menu icon + logo on mobile */}
-      <div className='flex items-center md:hidden gap-2'>
-        <AlignJustify className='h-6 w-6 cursor-pointer' />
-        <Link href="/" className="flex items-center">
-          <Image
-            src='/logo.svg'
-            height={40}
-            width={80}
-            alt='logo'
-            className="cursor-pointer"
-          />
-        </Link>
-      </div>
+    <header
+      className="sticky top-0 z-20 border-b"
+      style={{ background: 'var(--chalk)', borderColor: 'var(--rule)' }}
+    >
+      <div className="flex h-16 items-center justify-between px-5 sm:px-8">
+        {/* Mobile: menu button + logo. The sidebar is hidden below md. */}
+        <div className="flex items-center gap-5 md:hidden">
+          <button
+            type="button"
+            className="sio-text-btn"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-sidebar"
+            onClick={onMenuClick}
+          >
+            Menu
+          </button>
+          <Logo />
+        </div>
 
-      {/* Right Section: User Button */}
-      <div>
-        <UserButton afterSignOutUrl='/' />
+        {/* Desktop: current page, as the same pill badge used on the landing page */}
+        <span
+          className="hidden items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium md:inline-flex"
+          style={{
+            background: 'var(--paper)',
+            borderColor: 'var(--rule)',
+            color: 'var(--signal)',
+          }}
+        >
+          <span className="size-1.5 rounded-full" style={{ background: 'var(--signal)' }} />
+          {title}
+        </span>
+
+        <UserButton afterSignOutUrl="/" />
       </div>
     </header>
   )
