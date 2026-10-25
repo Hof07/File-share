@@ -37,7 +37,7 @@ const PLANS = [
       'Single file upload',
       '2 MB upload limit',
       '5 file upload limit',
-      'Sending shares by email not included',
+      'Sending shares by email',
     ],
     cta: 'Get started',
     href: '/upload',
